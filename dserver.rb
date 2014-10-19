@@ -1,7 +1,8 @@
 require 'drb/drb'
+require 'pry'
 
 class Piece
-  def initialize kind, player, grow
+  def initialize kind=nil, player=nil, grow=nil
     @kind   = kind
     @player = player
     @grow   = grow
@@ -19,7 +20,7 @@ class Piece
       "銀"
     when :kei
       "桂"
-    when :kyou
+    when :kyo
       "香"
     when :fu
       "歩"
@@ -27,6 +28,8 @@ class Piece
       "飛"
     when :kaku
       "角"
+    else
+      "  "
     end
   end
 
@@ -43,103 +46,190 @@ class Piece
     else
       str += " "
     end
-
     str += disp_kind @kind
     str += "\e[0m"
-    str += "|"
     str
   end
 end
 
 class Board
-
   def initialize
     @data = []
     @piece_stand = {}
     @piece_stand[:first]  = []
     @piece_stand[:second] = []
+
+
     @data << [
-              [" 香", :second], [" 桂", :second], [" 銀", :second],
-              [" 金", :second], [" 玉", :second], [" 金", :second],
-              [" 銀", :second], [" 桂", :second], [" 香", :second]
+              Piece.new(:kyo, :second, false),  Piece.new,
+              Piece.new(:fu, :second, false),  Piece.new, 
+              Piece.new, Piece.new,
+              Piece.new(:fu, :first, false),  Piece.new,
+              Piece.new(:kyo, :first, false)
              ]
 
     @data << [
-              [nil, nil], [" 角", :second], [nil, nil],
-              [nil, nil], [nil, nil],       [nil, nil],
-              [nil, nil], [" 飛", :second], [nil, nil]
+              Piece.new(:kei, :second, false), Piece.new(:kaku, :second, false),
+              Piece.new(:fu, :second, false), Piece.new,
+              Piece.new, Piece.new,
+              Piece.new(:fu, :first, false), Piece.new(:hi, :first, false),
+              Piece.new(:kei, :first, false)
              ]
 
     @data << [
-              [" 歩", :second], [" 歩", :second], [" 歩", :second],
-              [" 歩", :second], [" 歩", :second], [" 歩", :second],
-              [" 歩", :second], [" 歩", :second], [" 歩", :second]
+              Piece.new(:gin, :second, false), Piece.new,
+              Piece.new(:fu, :second, false), Piece.new,
+              Piece.new, Piece.new,
+              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:gin, :first, false)
              ]
 
     @data << [
-              [nil, nil], [nil, nil], [nil, nil],
-              [nil, nil], [nil, nil], [nil, nil],
-              [nil, nil], [nil, nil], [nil, nil]
+              Piece.new(:kin, :second, false), Piece.new,
+              Piece.new(:fu, :second, false), Piece.new,
+              Piece.new, Piece.new,
+              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:kin, :first, false)
              ]
 
     @data << [
-              [nil, nil], [nil, nil], [nil, nil],
-              [nil, nil], [nil, nil], [nil, nil],
-              [nil, nil], [nil, nil], [nil, nil]
+              Piece.new(:gyoku, :second,false), Piece.new,
+              Piece.new(:fu, :second, false), Piece.new,
+              Piece.new, Piece.new,
+              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:ou, :first, false)
              ]
 
     @data << [
-              [nil, nil], [nil, nil], [nil, nil],
-              [nil, nil], [nil, nil], [nil, nil],
-              [nil, nil], [nil, nil], [nil, nil]
+              Piece.new(:kin, :second, false), Piece.new,
+              Piece.new(:fu, :second, false), Piece.new,
+              Piece.new, Piece.new,
+              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:kin, :first, false)
              ]
 
     @data << [
-              [" 歩", :first], [" 歩", :first], [" 歩", :first],
-              [" 歩", :first], [" 歩", :first], [" 歩", :first],
-              [" 歩", :first], [" 歩", :first], [" 歩", :first]
+              Piece.new(:gin, :second, false), Piece.new,
+              Piece.new(:fu, :second, false), Piece.new,
+              Piece.new, Piece.new,
+              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:gin, :first, false)
              ]
 
     @data << [
-              [nil, nil], [" 飛", :first], [nil, nil],
-              [nil, nil], [nil, nil],     [nil, nil],
-              [nil, nil], [" 角", :first], [nil, nil]
+              Piece.new(:kei, :second, false), Piece.new(:hi, :second, false),
+              Piece.new(:fu, :second, false), Piece.new,
+              Piece.new, Piece.new,
+              Piece.new(:fu, :first, false), Piece.new(:kaku, :first, false),
+              Piece.new(:kei, :first, false)
              ]
 
     @data << [
-              [" 香", :first], [" 桂", :first], [" 銀", :first],
-              [" 金", :first], [" 王", :first], [" 金", :first],
-              [" 銀", :first], [" 桂", :first], [" 香", :first]
+              Piece.new(:kyo, :second, false), Piece.new,
+              Piece.new(:fu, :second, false), Piece.new,
+              Piece.new,  Piece.new,
+              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:kyo, :first, false)
              ]
+
+
+
+
+#    @data << [
+#              Piece.new(:kyo, :second, false),  Piece.new(:kei, :second, false),
+#              Piece.new(:gin, :second, false),  Piece.new(:kin, :second, false), 
+#              Piece.new(:gyoku, :second,false), Piece.new(:kin, :second, false),
+#              Piece.new(:gin, :second, false),  Piece.new(:kei, :second, false),
+#              Piece.new(:kyo, :second, false)
+#             ]
+#
+#    @data << [
+#              Piece.new, Piece.new(:kaku, :second, false),
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new(:hi, :second, false),
+#              Piece.new
+#             ]
+#
+#    @data << [
+#              Piece.new(:fu, :second, false), Piece.new(:fu, :second, false),
+#              Piece.new(:fu, :second, false), Piece.new(:fu, :second, false),
+#              Piece.new(:fu, :second, false), Piece.new(:fu, :second, false),
+#              Piece.new(:fu, :second, false), Piece.new(:fu, :second, false),
+#              Piece.new(:fu, :second, false)
+#             ]
+#
+#    @data << [
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new
+#             ]
+#
+#    @data << [
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new
+#             ]
+#
+#    @data << [
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new
+#             ]
+#
+#    @data << [
+#              Piece.new(:fu, :first, false), Piece.new(:fu, :first, false),
+#              Piece.new(:fu, :first, false), Piece.new(:fu, :first, false),
+#              Piece.new(:fu, :first, false), Piece.new(:fu, :first, false),
+#              Piece.new(:fu, :first, false), Piece.new(:fu, :first, false),
+#              Piece.new(:fu, :first, false)
+#             ]
+#
+#    @data << [
+#              Piece.new, Piece.new(:hi, :first, false),
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new,
+#              Piece.new, Piece.new(:kaku, :first, false),
+#              Piece.new
+#             ]
+#
+#    @data << [
+#              Piece.new(:kyo, :first, false), Piece.new(:kei, :first, false),
+#              Piece.new(:gin, :first, false), Piece.new(:kin, :first, false),
+#              Piece.new(:ou, :first, false),  Piece.new(:kin, :first, false),
+#              Piece.new(:gin, :first, false), Piece.new(:kei, :first, false),
+#              Piece.new(:kyo, :first, false)
+#             ]
   end
 
   def to_s
     str  = "後手持駒：#{@piece_stand[:second]}\n"
     str += " 9   8   7   6   5   4   3   2   1 \n"
     line_title = ["一", "二", "三", "四", "五", "六", "七", "八", "九"]
-    @data.each_with_index do |line, idx|
-      line.each do |piece|
-        if piece[0] == nil
-          str += "   |"
-        else
-          if piece[1] == :first
-            str += "\e[32m"
-          else
-            str += "\e[31m"
-          end
-          str += "#{piece[0]}"
-          str += "\e[0m"
-          str += "|"
-        end
+
+    9.times do |y|
+      9.times do |x|
+        str += @data[8-x][y].to_s
+        str += "|"
       end
-      str += "#{line_title[idx]}\n"
+      str += "#{line_title[y]}\n"
     end
+
     str += "先手持駒：#{@piece_stand[:first]}\n"
     str
   end
 
   def move before, after
-    exist? before[0], before[1]
+    #exist? before[0], before[1]
+    tmp = @data[before[0]][before[1]]
+    @data[before[0]][before[1]] = Piece.new
+    @data[after[0]][after[1]] = tmp
   end
 
   def set
