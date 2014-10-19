@@ -7,3 +7,5 @@ DRb.start_service
 obj = DRbObject.new_with_uri('druby://localhost:54000')
 #get = obj.test()
 puts obj.to_s
+#obj.move [2, 2], [3, 2]
+puts obj.to_s
