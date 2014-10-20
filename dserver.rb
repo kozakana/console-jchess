@@ -1,7 +1,12 @@
 require 'drb/drb'
 require 'pry'
 
+class ExistPiece < StandardError; end
+class MissingPiece < StandardError; end
+
 class Piece
+  attr_reader :player
+
   def initialize kind=nil, player=nil, grow=nil
     @kind   = kind
     @player = player
@@ -61,151 +66,76 @@ class Board
 
 
     @data << [
-              Piece.new(:kyo, :second, false),  Piece.new,
+              Piece.new(:kyo, :second, false), Piece.new,
               Piece.new(:fu, :second, false),  Piece.new, 
-              Piece.new, Piece.new,
-              Piece.new(:fu, :first, false),  Piece.new,
+              Piece.new,                       Piece.new,
+              Piece.new(:fu, :first, false),   Piece.new,
               Piece.new(:kyo, :first, false)
              ]
 
     @data << [
               Piece.new(:kei, :second, false), Piece.new(:kaku, :second, false),
-              Piece.new(:fu, :second, false), Piece.new,
-              Piece.new, Piece.new,
-              Piece.new(:fu, :first, false), Piece.new(:hi, :first, false),
+              Piece.new(:fu, :second, false),  Piece.new,
+              Piece.new,                       Piece.new,
+              Piece.new(:fu, :first, false),   Piece.new(:hi, :first, false),
               Piece.new(:kei, :first, false)
              ]
 
     @data << [
               Piece.new(:gin, :second, false), Piece.new,
-              Piece.new(:fu, :second, false), Piece.new,
-              Piece.new, Piece.new,
-              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:fu, :second, false),  Piece.new,
+              Piece.new,                       Piece.new,
+              Piece.new(:fu, :first, false),   Piece.new,
               Piece.new(:gin, :first, false)
              ]
 
     @data << [
               Piece.new(:kin, :second, false), Piece.new,
-              Piece.new(:fu, :second, false), Piece.new,
-              Piece.new, Piece.new,
-              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:fu, :second, false),  Piece.new,
+              Piece.new,                       Piece.new,
+              Piece.new(:fu, :first, false),   Piece.new,
               Piece.new(:kin, :first, false)
              ]
 
     @data << [
               Piece.new(:gyoku, :second,false), Piece.new,
-              Piece.new(:fu, :second, false), Piece.new,
-              Piece.new, Piece.new,
-              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:fu, :second, false),   Piece.new,
+              Piece.new,                        Piece.new,
+              Piece.new(:fu, :first, false),    Piece.new,
               Piece.new(:ou, :first, false)
              ]
 
     @data << [
               Piece.new(:kin, :second, false), Piece.new,
-              Piece.new(:fu, :second, false), Piece.new,
-              Piece.new, Piece.new,
-              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:fu, :second, false),  Piece.new,
+              Piece.new,                       Piece.new,
+              Piece.new(:fu, :first, false),   Piece.new,
               Piece.new(:kin, :first, false)
              ]
 
     @data << [
               Piece.new(:gin, :second, false), Piece.new,
-              Piece.new(:fu, :second, false), Piece.new,
-              Piece.new, Piece.new,
-              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:fu, :second, false),  Piece.new,
+              Piece.new,                       Piece.new,
+              Piece.new(:fu, :first, false),   Piece.new,
               Piece.new(:gin, :first, false)
              ]
 
     @data << [
               Piece.new(:kei, :second, false), Piece.new(:hi, :second, false),
-              Piece.new(:fu, :second, false), Piece.new,
-              Piece.new, Piece.new,
-              Piece.new(:fu, :first, false), Piece.new(:kaku, :first, false),
+              Piece.new(:fu, :second, false),  Piece.new,
+              Piece.new,                       Piece.new,
+              Piece.new(:fu, :first, false),   Piece.new(:kaku, :first, false),
               Piece.new(:kei, :first, false)
              ]
 
     @data << [
               Piece.new(:kyo, :second, false), Piece.new,
-              Piece.new(:fu, :second, false), Piece.new,
-              Piece.new,  Piece.new,
-              Piece.new(:fu, :first, false), Piece.new,
+              Piece.new(:fu, :second, false),  Piece.new,
+              Piece.new,                       Piece.new,
+              Piece.new(:fu, :first, false),   Piece.new,
               Piece.new(:kyo, :first, false)
              ]
-
-
-
-
-#    @data << [
-#              Piece.new(:kyo, :second, false),  Piece.new(:kei, :second, false),
-#              Piece.new(:gin, :second, false),  Piece.new(:kin, :second, false), 
-#              Piece.new(:gyoku, :second,false), Piece.new(:kin, :second, false),
-#              Piece.new(:gin, :second, false),  Piece.new(:kei, :second, false),
-#              Piece.new(:kyo, :second, false)
-#             ]
-#
-#    @data << [
-#              Piece.new, Piece.new(:kaku, :second, false),
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new(:hi, :second, false),
-#              Piece.new
-#             ]
-#
-#    @data << [
-#              Piece.new(:fu, :second, false), Piece.new(:fu, :second, false),
-#              Piece.new(:fu, :second, false), Piece.new(:fu, :second, false),
-#              Piece.new(:fu, :second, false), Piece.new(:fu, :second, false),
-#              Piece.new(:fu, :second, false), Piece.new(:fu, :second, false),
-#              Piece.new(:fu, :second, false)
-#             ]
-#
-#    @data << [
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new
-#             ]
-#
-#    @data << [
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new
-#             ]
-#
-#    @data << [
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new
-#             ]
-#
-#    @data << [
-#              Piece.new(:fu, :first, false), Piece.new(:fu, :first, false),
-#              Piece.new(:fu, :first, false), Piece.new(:fu, :first, false),
-#              Piece.new(:fu, :first, false), Piece.new(:fu, :first, false),
-#              Piece.new(:fu, :first, false), Piece.new(:fu, :first, false),
-#              Piece.new(:fu, :first, false)
-#             ]
-#
-#    @data << [
-#              Piece.new, Piece.new(:hi, :first, false),
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new,
-#              Piece.new, Piece.new(:kaku, :first, false),
-#              Piece.new
-#             ]
-#
-#    @data << [
-#              Piece.new(:kyo, :first, false), Piece.new(:kei, :first, false),
-#              Piece.new(:gin, :first, false), Piece.new(:kin, :first, false),
-#              Piece.new(:ou, :first, false),  Piece.new(:kin, :first, false),
-#              Piece.new(:gin, :first, false), Piece.new(:kei, :first, false),
-#              Piece.new(:kyo, :first, false)
-#             ]
   end
 
   def to_s
@@ -226,17 +156,45 @@ class Board
   end
 
   def move before, after
-    #exist? before[0], before[1]
-    tmp = @data[before[0]][before[1]]
+    unless exist? before
+      raise MissingPiece, "動かそうとする駒がありません"
+    end
+
+    if exist? after
+      captured = @data[after[0]][after[1]]
+      if captured.player == :first
+        @piece_stand[:first] = captured
+      else
+        @piece_stand[:second] = captured
+      end
+    else
+      raise ExistPiece, "異動先に既に駒が存在しています"
+    end
+    @data[after[0]][after[1]]   = @data[before[0]][before[1]]
     @data[before[0]][before[1]] = Piece.new
-    @data[after[0]][after[1]] = tmp
   end
 
-  def set
+  def set pos, piece
+    if exist? pos
+      raise ExistPiece, "駒を打とうとしている場所に駒が存在しています"
+    end
+    
+    player = piece.player
+    if @piece_stand[player].exist?(piece)
+      @piece_stand[player].each_with_index do |p, i|
+        if p == piece
+          @piece_stand.delete_at i
+          break
+        end
+      end
+      
+    else
+      raise MissingPiece, "駒台に指定の駒がありません"
+    end
   end
 
-  def exist? row, line
-    nil != @data[line][row][0]
+  def exist? pos
+    nil != @data[pos[0]][pos[1]].player
   end
 
   def piece row, line
