@@ -1,9 +1,12 @@
 require './piece'
+require 'singleton'
 
 class ExistPiece < StandardError; end
 class MissingPiece < StandardError; end
 
 class Board
+  include Singleton
+  
   def initialize
     @data = []
     @piece_stand = {}
@@ -44,7 +47,7 @@ class Board
              ]
 
     @data << [
-              Piece.new(:gyoku, :second,false), Piece.new,
+              Piece.new(:ou, :second,false), Piece.new,
               Piece.new(:fu, :second, false),   Piece.new,
               Piece.new,                        Piece.new,
               Piece.new(:fu, :first, false),    Piece.new,
@@ -114,7 +117,7 @@ class Board
         @piece_stand[:second] = captured
       end
     else
-      raise ExistPiece, "異動先に既に駒が存在しています"
+      raise ExistPiece, "移動先に既に駒が存在しています"
     end
     @data[after[0]][after[1]]   = @data[before[0]][before[1]]
     @data[before[0]][before[1]] = Piece.new
