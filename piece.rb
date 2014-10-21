@@ -1,12 +1,17 @@
 # TODO: 強制的駒を成る判定(行ける所がない判定)
 
 class Piece
-  attr_accessor :player
+  attr_accessor :player, :grow
+  attr_reader :kind
 
   def initialize kind=nil, player=nil, grow=nil
     @kind   = kind
     @player = player
     @grow   = grow
+  end
+
+  def ==(pce)
+    @kind == pce.kind && @player == pce.player
   end
 
   def disp_kind kind
@@ -169,5 +174,31 @@ class Piece
     str += disp_kind @kind
     str += "\e[0m"
     str
+  end
+
+  # 次動ける場所かどうか(駒を打つ時の判定等)
+  def can_next? pos
+    return true if @grow == true
+    case @kind
+    when :kei
+      if @player == :first
+        return false if pos[1] <= 1
+      else
+        return false if pos[1] >= 7
+      end
+    when :kyo
+      if @player == :first
+        return false if pos[1] <= 0
+      else
+        return false if pos[1] >= 8
+      end
+    when :fu
+      if @player == :first
+        return false if pos[1] <= 0
+      else
+        return false if pos[1] >= 8
+      end
+    end
+    true
   end
 end

@@ -11,11 +11,14 @@ class Board
   include Singleton
   
   def initialize
+    init_board
+  end
+
+  def init_board
     @data = []
     @piece_stand = {}
     @piece_stand[:first]  = []
     @piece_stand[:second] = []
-
 
     @data << [
               Piece.new(:kyo, :second, false), Piece.new,
@@ -91,7 +94,11 @@ class Board
   end
 
   def to_s
-    str  = "後手持駒：#{@piece_stand[:second]}\n"
+    str  = "後手持駒："
+    @piece_stand[:second].each do |pce|
+      str += pce.to_s
+    end
+    str += "\n"
     str += " 9   8   7   6   5   4   3   2   1 \n"
     line_title = ["一", "二", "三", "四", "五", "六", "七", "八", "九"]
 
@@ -103,7 +110,11 @@ class Board
       str += "#{line_title[y]}\n"
     end
 
-    str += "先手持駒：#{@piece_stand[:first]}\n"
+    str += "先手持駒："
+    @piece_stand[:first].each do |pce|
+      str += pce.to_s
+    end
+    str += "\n"
     str
   end
 
@@ -116,45 +127,70 @@ class Board
       captured = @data[after[0]][after[1]]
       if captured.player == :first
         captured.player = :second
-        @piece_stand[:second] = captured
+        @piece_stand[:second] << captured
       else
         captured.player = :first
-        @piece_stand[:first] = captured
+        @piece_stand[:first] << captured
       end
     end
 
     @data[after[0]][after[1]]   = @data[before[0]][before[1]]
     @data[before[0]][before[1]] = Piece.new
-  end
 
-  def set pos, piece
+    if can_grow? after
+      if piece(after).can_next?(after)
+        return {grow: :can}
+      else
+        return {grow: :must}
+      end
+    else
+      return {grow: :cannot}
+    end
+  end
+  
+  def set pos, kind, player
     if exist? pos
       raise ExistPiece, "駒を打とうとしている場所に駒が存在しています"
     end
+
+    piece = Piece.new(kind, player, false)
     
-    player = piece.player
-    if @piece_stand[player].exist?(piece)
+    if @piece_stand[player].include?(piece)
       @piece_stand[player].each_with_index do |p, i|
         if p == piece
-          @piece_stand.delete_at i
+          @piece_stand[player].delete_at i
           break
         end
       end
-      
     else
       raise MissingPiece, "駒台に指定の駒がありません"
     end
+
+    @data[pos[0]][pos[1]] = piece
   end
 
   def exist? pos
     nil != @data[pos[0]][pos[1]].player
   end
 
-  def piece row, line
-    @data[line][row]
+  def piece pos
+    @data[pos[0]][pos[1]]
   end
 
-  def first? row, line
-    piece(row, line).player == :first
+  def first? pos
+    piece(pos).player == :first
+  end
+
+  def can_grow? pos
+    pce = piece pos
+    if pce.player == :first
+      true if pos[1] <= 2
+    else
+      true if pos[1] >= 6
+    end
+  end
+  
+  def grow_piece pos
+    piece(pos).grow = true
   end
 end
