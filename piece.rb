@@ -1,5 +1,7 @@
+# TODO: 強制的駒を成る判定(行ける所がない判定)
+
 class Piece
-  attr_reader :player
+  attr_accessor :player
 
   def initialize kind=nil, player=nil, grow=nil
     @kind   = kind
@@ -43,10 +45,13 @@ class Piece
     when :kin
       move_kin before, after
     when :gin
-
+      move_gin before, after
     when :kei
+      move_kei before, after
     when :kyo
+      move_kyo before, after
     when :fu
+      move_fu before, after
     when :hi
     when :kaku
     end
@@ -95,7 +100,7 @@ class Piece
       return move_kin before, after
     end
 
-    return true if before[0]   == after[0] && before[1]   == after[1]
+    return true if before[0]  == after[0] && before[1]  == after[1]
     if @player == :first
       return true if before[0]-1 == after[0] && before[1]-2 == after[1]
       return true if before[0]+1 == after[0] && before[1]-2 == after[1]
@@ -111,13 +116,41 @@ class Piece
       return move_kin before, after
     end
 
-    return false unless before[0] == after[0]
+    return true if before[0] == after[0]
     if @player == :first
-      return false unless before[1] >= after[0]
+      return false unless before[1] >= after[1]
     else
-      return false unless before[1] <= after[0]
+      return false unless before[1] <= after[1]
     end
     true
+  end
+
+  def move_fu
+    if @grow == true
+      return move_kin before, after
+    end
+
+    return true if before[0] == after[0]
+    if @player == :first
+      return true if before[0]-1 == after[0]
+    else
+      return true if before[0]+1 == after[0]
+    end
+
+    false
+  end
+
+  def move_hi before, after
+    return true if before[0] == after[0]
+    return true if before[1] == after[1]
+
+    if @grow == true
+      return move_ou before, after
+    end
+    
+    return true if before[0] == after[0]
+
+    false
   end
 
   def to_s

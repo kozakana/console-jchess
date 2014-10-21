@@ -4,6 +4,9 @@ require 'singleton'
 class ExistPiece < StandardError; end
 class MissingPiece < StandardError; end
 
+# TODO: 飛び駒の判定
+# TODO: 二歩判定
+
 class Board
   include Singleton
   
@@ -112,13 +115,14 @@ class Board
     if exist? after
       captured = @data[after[0]][after[1]]
       if captured.player == :first
-        @piece_stand[:first] = captured
-      else
+        captured.player = :second
         @piece_stand[:second] = captured
+      else
+        captured.player = :first
+        @piece_stand[:first] = captured
       end
-    else
-      raise ExistPiece, "移動先に既に駒が存在しています"
     end
+
     @data[after[0]][after[1]]   = @data[before[0]][before[1]]
     @data[before[0]][before[1]] = Piece.new
   end
@@ -148,5 +152,9 @@ class Board
 
   def piece row, line
     @data[line][row]
+  end
+
+  def first? row, line
+    piece(row, line).player == :first
   end
 end
