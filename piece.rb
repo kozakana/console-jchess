@@ -68,6 +68,7 @@ class Piece
       return false unless before[0]-1 == after[0] && before[1]+1 == after[1]
       return false unless before[0]+1 == after[0] && before[1]+1 == after[1]
     end
+    true
   end
 
   def move_gin before, after
@@ -86,6 +87,37 @@ class Piece
     else
       return false unless before[0] == after[0] && before[1]+1 == after[1]
     end
+    true
+  end
+  
+  def move_kei before, after
+    if @grow == true
+      return move_kin before, after
+    end
+
+    return true if before[0]   == after[0] && before[1]   == after[1]
+    if @player == :first
+      return true if before[0]-1 == after[0] && before[1]-2 == after[1]
+      return true if before[0]+1 == after[0] && before[1]-2 == after[1]
+    else
+      return true if before[0]-1 == after[0] && before[1]+2 == after[1]
+      return true if before[0]+1 == after[0] && before[1]+2 == after[1]
+    end
+    false
+  end
+
+  def move_kyo before, after
+    if @grow == true
+      return move_kin before, after
+    end
+
+    return false unless before[0] == after[0]
+    if @player == :first
+      return false unless before[1] >= after[0]
+    else
+      return false unless before[1] <= after[0]
+    end
+    true
   end
 
   def to_s
