@@ -1,0 +1,16 @@
+move [before] [after]
+  駒の移動
+  例：
+  ３三から３四への駒の移動
+  move 33 34
+
+set [pos] [kind]
+  駒台から駒を打つ
+  kind 駒の種類
+  ou / kin / gin / kei / kyo / fu / hi / kaku
+  例：
+  駒台の歩を３四に打つ
+  set 34 fu
+
+print
+  盤面を表示

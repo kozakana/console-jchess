@@ -27,7 +27,16 @@ class Client
 
       after[0]  = com[2][0].to_i - 1
       after[1]  = com[2][1].to_i - 1
-      status = @obj.move before, after
+      begin
+        status = @obj.move before, after
+      rescue => e
+        if e.message == "MissingPiece"
+          puts "動かそうとする駒がありません"
+        elsif e.message == "ExistPiece"
+          puts "移動先に自分の駒があります"
+        end
+        return
+      end
       if status[:grow] == :can
         if grow_ask
           @obj.grow_piece after
@@ -42,8 +51,22 @@ class Client
       pos[1] = com[1][1].to_i - 1
       kind = com[2].to_sym
       # TODO
-      @obj.set pos, kind, :first
+      begin
+        @obj.set pos, kind, :first
+      rescue => e
+        if e.message == "MissingPiece"
+          puts "駒台に駒がありません"
+        elsif e.message == "ExistPiece"
+          puts "打つ場所に自分の駒があります"
+        end
+        return
+      end
     when "print" then
+    when "help" then
+      f = open("./doc/help.txt")
+      puts f.read
+      f.close
+      return
     end
     puts @obj.to_s
   end
