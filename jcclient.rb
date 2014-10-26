@@ -8,7 +8,8 @@ class Client
   def initialize ipaddr, port
     DRb.start_service
     @obj = DRbObject.new_with_uri("druby://#{ipaddr}:#{port}")
-    @obj.connecting rand(1000000).to_s
+    @id = rand(1000000).to_s
+    puts @obj.connecting @id
   end
 
   def print
@@ -51,9 +52,8 @@ class Client
       pos[0] = com[1][0].to_i - 1
       pos[1] = com[1][1].to_i - 1
       kind = com[2].to_sym
-      # TODO
       begin
-        @obj.set pos, kind, :first
+        @obj.set pos, kind, @id
       rescue => e
         if e.message == "MissingPiece"
           puts "駒台に駒がありません"

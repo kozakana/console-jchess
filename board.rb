@@ -102,12 +102,18 @@ class Board
       return
     end
 
-    if @order_list.length == 0
+    if @order_list[:first] == nil
+      puts "connect first:#{id}"
       @order_list[:first] = id
-    elsif @order_list.length == 1
+      "あなたは先手です"
+    elsif @order_list[:second] == nil
+      puts "connect second:#{id}"
       @order_list[:second] = id
+      "あなたは後手です"
     else
       @order_list[:audience] << id
+      puts "connect audience:#{id}"
+      "あなたは観覧者です"
     end
   end
 
