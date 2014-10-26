@@ -15,6 +15,10 @@ class Board
   end
 
   def init_board
+    # @player[:first][:name]    = ""    # TODO
+    # @player[:second][:name]   = ""    # TODO
+    @order_list = {}
+    @order_list[:audience] = Array.new
     @data = []
     @piece_stand = {}
     @piece_stand[:first]  = []
@@ -93,6 +97,20 @@ class Board
              ]
   end
 
+  def connecting id
+    if @order_list.value? id
+      return
+    end
+
+    if @order_list.length == 0
+      @order_list[:first] = id
+    elsif @order_list.length == 1
+      @order_list[:second] = id
+    else
+      @order_list[:audience] << id
+    end
+  end
+
   def to_s
     str  = "後手持駒："
     @piece_stand[:second].each do |pce|
@@ -148,17 +166,38 @@ class Board
     end
   end
   
-  def set pos, kind, player
+  def player? id
+    if @order_list[:first] == id || @order_list[:second] == id
+      return true
+    end
+    false
+  end
+
+  def order id
+    if @order_list[:first] == id
+      return :first
+    elsif @order_list[:second] == id
+      return :second
+    else
+      return :audience
+    end
+  end
+
+  def set pos, kind, id
     if exist? pos
       raise ExistPiece, "駒を打とうとしている場所に駒が存在しています"
     end
-
-    piece = Piece.new(kind, player, false)
     
-    if @piece_stand[player].include?(piece)
-      @piece_stand[player].each_with_index do |p, i|
+    unless player?
+      p "プレーヤーではありません"
+    end
+    
+    piece = Piece.new(kind, order(id), false)
+    
+    if @piece_stand[order(id)].include?(piece)
+      @piece_stand[order(id)].each_with_index do |p, i|
         if p == piece
-          @piece_stand[player].delete_at i
+          @piece_stand[order(id)].delete_at i
           break
         end
       end

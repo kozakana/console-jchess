@@ -1,8 +1,22 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    coderay (1.1.0)
+    libv8 (3.16.14.7)
+    method_source (0.8.2)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    ref (1.0.5)
+    slop (3.6.0)
+    therubyracer (0.12.1)
+      libv8 (~> 3.16.14.0)
+      ref
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  pry
+  therubyracer

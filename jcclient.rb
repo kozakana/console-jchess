@@ -8,6 +8,7 @@ class Client
   def initialize ipaddr, port
     DRb.start_service
     @obj = DRbObject.new_with_uri("druby://#{ipaddr}:#{port}")
+    @obj.connecting rand(1000000).to_s
   end
 
   def print

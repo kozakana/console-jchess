@@ -19,7 +19,8 @@ end
 
 args = cmdline
 
-server = "druby://#{args[:ipaddr]}:#{args[:port]}"
+#server = "druby://#{args[:ipaddr]}:#{args[:port]}"
+server = "druby://:#{args[:port]}"
 
 DRb.start_service(server, Board.instance)
 
