@@ -43,6 +43,11 @@ class Client
         end
         return
       end
+      
+      if status == nil
+        return
+      end
+
       if status[:grow] == :can
         if grow_ask
           @obj.grow_piece after
@@ -57,7 +62,6 @@ class Client
       pos[1] = com[1][1].to_i - 1
       kind = com[2].to_sym
       begin
-        binding.pry
         @obj.set pos, kind, @id
       rescue => e
         if e.message == "MissingPiece"
