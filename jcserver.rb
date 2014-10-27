@@ -18,7 +18,9 @@ args = cmdline
 
 server = "druby://:#{args[:port]}"
 
-DRb.start_service(server, Board.instance)
+sv = DRb.start_service(server, Board.instance)
+
+#binding.pry
 
 while true
   sleep 1

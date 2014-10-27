@@ -6,6 +6,13 @@ class MissingPiece < StandardError; end
 
 # TODO: 飛び駒の判定
 # TODO: 二歩判定
+# TODO: 観客は見るだけにする
+# TODO: 観客ステータス
+# TODO: 先後逆の駒は触れないようにする
+# TODO: ログ機能
+# TODO: 待った機能
+# TODO: 負けました機能
+# TODO: 交互にしか指せなくする
 
 class Board
   include Singleton
@@ -57,7 +64,7 @@ class Board
              ]
 
     @data << [
-              Piece.new(:ou, :second,false), Piece.new,
+              Piece.new(:ou, :second,false),    Piece.new,
               Piece.new(:fu, :second, false),   Piece.new,
               Piece.new,                        Piece.new,
               Piece.new(:fu, :first, false),    Piece.new,
@@ -113,7 +120,7 @@ class Board
     else
       @order_list[:audience] << id
       puts "connect audience:#{id}"
-      "あなたは観覧者です"
+      "あなたは観戦者です"
     end
   end
 
@@ -142,9 +149,19 @@ class Board
     str
   end
 
-  def move before, after
+  def move before, after, id
     unless exist? before
       raise MissingPiece, "動かそうとする駒がありません"
+    end
+
+    orig_piece = @data[before[0]][before[1]]
+    od = order id
+    if orig_piece.player != od
+      if od == :audience
+        p "観戦者は駒を動かす事は出来ません"
+      else
+        p "自分の駒以外は動かせません"
+      end
     end
 
     if exist? after
@@ -195,7 +212,7 @@ class Board
     end
     
     unless player?
-      p "プレーヤーではありません"
+      p "観戦者は駒を動かす事はできません"
     end
     
     piece = Piece.new(kind, order(id), false)
