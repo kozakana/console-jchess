@@ -1,22 +1,43 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    binding_of_caller (0.7.2)
+      debug_inspector (>= 0.0.1)
+    byebug (3.5.1)
+      columnize (~> 0.8)
+      debugger-linecache (~> 1.2)
+      slop (~> 3.6)
     coderay (1.1.0)
+    columnize (0.8.9)
+    debug_inspector (0.0.2)
+    debugger-linecache (1.2.0)
     libv8 (3.16.14.7)
     method_source (0.8.2)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-byebug (2.0.0)
+      byebug (~> 3.4)
+      pry (~> 0.10)
+    pry-doc (0.6.0)
+      pry (~> 0.9)
+      yard (~> 0.8)
+    pry-stack_explorer (0.4.9.1)
+      binding_of_caller (>= 0.7)
+      pry (>= 0.9.11)
     ref (1.0.5)
     slop (3.6.0)
     therubyracer (0.12.1)
       libv8 (~> 3.16.14.0)
       ref
+    yard (0.8.7.6)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  pry
+  pry-byebug
+  pry-doc
+  pry-stack_explorer
   therubyracer
