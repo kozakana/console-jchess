@@ -170,9 +170,11 @@ class Board
       captured = @data[after[0]][after[1]]
       if captured.player == :first
         captured.player = :second
+        captured.grow = false
         @piece_stand[:second] << captured
       else
         captured.player = :first
+        captured.grow = false
         @piece_stand[:first] << captured
       end
     end
