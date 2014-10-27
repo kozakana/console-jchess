@@ -159,8 +159,10 @@ class Board
     if orig_piece.player != od
       if od == :audience
         p "観戦者は駒を動かす事は出来ません"
+        return
       else
         p "自分の駒以外は動かせません"
+        return
       end
     end
 
@@ -211,8 +213,9 @@ class Board
       raise ExistPiece, "駒を打とうとしている場所に駒が存在しています"
     end
     
-    unless player?
+    unless player? id
       p "観戦者は駒を動かす事はできません"
+      return
     end
     
     piece = Piece.new(kind, order(id), false)
