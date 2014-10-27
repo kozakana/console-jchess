@@ -36,9 +36,12 @@ bundle install --path vendor/bundle
  * bundle exec ruby jcclient.rb
 
 ### オプション
--help ヘルプを表示する
--i, --ipaddr [VALUE]             引数付きオプション(デフォルトlocalhost)
--p, --port [VALUE]               ポート番号指定(デフォルト1117)
+* jcclient / jcserver 共通
+ * -help ヘルプを表示する
+ * -p, --port [VALUE]               ポート番号指定(デフォルト1117)
+* jcclient のみ
+ * -i, --ipaddr [VALUE]             引数付きオプション(デフォルトlocalhost)
+
 
 ## コマンド
 
@@ -48,13 +51,13 @@ print
 
 ### 駒を指す
 
-７七の駒を７六へ動かす
-move 77 76
+* ７七の駒を７六へ動かす
+ * move 77 76
 
 ### 駒台から駒を打つ
 
-７四に歩を打つ
-set 74 fu
+* ７四に歩を打つ
+ * set 74 fu
 
 * 駒の指定
  * 王/玉 : fu
