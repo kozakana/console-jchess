@@ -104,23 +104,35 @@ class Board
              ]
   end
 
+  # TODO: id
   def connecting id
     if @order_list.value? id
-      return
+      if @order_list[:first] == id
+        puts "reconnect first:#{id}"
+        return {mes: "あなたは先手です", id: id}
+      elsif @order_list[:second] == id
+        puts "reconnect second:#{id}"
+        return {mes: "あなたは後手です", id: id}
+      else
+        puts "reconnect audience:#{id}"
+        return {mes: "あなたは観戦者です", id: id}
+      end
     end
+
+    id = rand(1000000).to_s  # かぶる可能性
 
     if @order_list[:first] == nil
       puts "connect first:#{id}"
       @order_list[:first] = id
-      "あなたは先手です"
+      {mes: "あなたは先手です", id: id}
     elsif @order_list[:second] == nil
       puts "connect second:#{id}"
       @order_list[:second] = id
-      "あなたは後手です"
+      {mes: "あなたは後手です", id: id}
     else
       @order_list[:audience] << id
       puts "connect audience:#{id}"
-      "あなたは観戦者です"
+      {mes: "あなたは観戦者です", id: id}
     end
   end
 
