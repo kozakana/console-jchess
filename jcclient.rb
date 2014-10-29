@@ -1,5 +1,6 @@
 require 'drb/drb'
 require 'optparse'
+require 'readline'
 require 'pry'
 
 class CmmandFail < StandardError; end
@@ -7,6 +8,8 @@ class CmmandFail < StandardError; end
 IDFILE = "./.jcid"
 
 class Client
+  attr_reader :order
+
   def initialize param
     DRb.start_service
     @obj = DRbObject.new_with_uri("druby://#{param[:ipaddr]}:#{param[:port]}")
@@ -15,13 +18,15 @@ class Client
     if param[:id] != nil
       @id  = param[:id]
       info = @obj.connecting @id
-      p info[:mes]
+      @order = info[:order]
+      print_order info[:order]
       return
     end
 
     info = @obj.connecting nil
     @id = info[:id]
-    p info[:mes]
+    @order = info[:order]
+    print_order info[:order]
     File.open(IDFILE, "w") do |f|
       f.write @id
     end
@@ -31,6 +36,18 @@ class Client
     puts @obj.to_s
   end
 
+  def print_order order
+    case order
+    when :first
+      puts "あなたは先手です"
+    when :second
+      puts "あなたは後手です"
+    else
+      puts "あなたは観戦者です"
+    end
+  end
+
+  # 先後変化するときtrue
   def command str
     return if str == ""
 
@@ -56,11 +73,11 @@ class Client
         else
           p e
         end
-        return
+        return false
       end
       
       if status == nil
-        return
+        return false
       end
 
       if status[:grow] == :can
@@ -77,7 +94,7 @@ class Client
       pos[1] = com[1][1].to_i - 1
       unless piece_name? com[2]
         puts "駒の指定が間違っています"
-        return
+        return false
       end
       kind = com[2].to_sym
       begin
@@ -90,19 +107,31 @@ class Client
         else
           p e
         end
-        return
+        return false
       end
-    when "print" then
+    #when "print" then
     when "help" then
       f = open("./doc/help.txt")
       puts f.read
       f.close
-      return
+      return false
     else
       puts "コマンドが間違っています"
-      return
+      return false
     end
     puts @obj.to_s
+    return true
+  end
+  
+  def my_order?
+    case @order
+    when :first
+      @obj.order_first
+    when :second
+      !@obj.order_first
+    else
+      false
+    end
   end
   
   def grow_ask
@@ -123,11 +152,11 @@ class Client
   end
 end
 
-if ARGV.length == 0
-  ipaddr = "localhost"
-else
-  ipaddr = ARGV[0]
-end
+#if ARGV.length == 0
+#  ipaddr = "localhost"
+#else
+#  ipaddr = ARGV[0]
+#end
 
 def cmdline
   args = {ipaddr: "localhost", port: "1117"}
@@ -148,8 +177,30 @@ end
 
 args = cmdline
 cl = Client.new args
+unless cl.my_order?
+  cl.print
+end
 
-while true
-  str = STDIN.gets.chomp
-  cl.command str
+consol = 
+  case cl.order
+  when :first
+    "先手"
+  when :second
+    "後手"
+  else
+    "観戦者"
+  end
+
+consol += "> "
+
+loop do
+  unless cl.my_order?
+    sleep 1
+    next
+  end
+  cl.print
+  line = Readline::readline(consol)
+  break if line.nil? || line == 'quit'
+  Readline::HISTORY.push(line)
+  cl.command line
 end

@@ -16,6 +16,7 @@ class MissingPiece < StandardError; end
 
 class Board
   include Singleton
+  attr_reader :order_first
   
   def initialize
     init_board
@@ -30,6 +31,7 @@ class Board
     @piece_stand = {}
     @piece_stand[:first]  = []
     @piece_stand[:second] = []
+    @order_first = true
 
     @data << [
               Piece.new(:kyo, :second, false), Piece.new,
@@ -109,13 +111,13 @@ class Board
     if @order_list.value? id
       if @order_list[:first] == id
         puts "reconnect first:#{id}"
-        return {mes: "あなたは先手です", id: id}
+        return {order: :first, id: id}
       elsif @order_list[:second] == id
         puts "reconnect second:#{id}"
-        return {mes: "あなたは後手です", id: id}
+        return {order: :second, id: id}
       else
         puts "reconnect audience:#{id}"
-        return {mes: "あなたは観戦者です", id: id}
+        return {order: :audience, id: id}
       end
     end
 
@@ -124,15 +126,15 @@ class Board
     if @order_list[:first] == nil
       puts "connect first:#{id}"
       @order_list[:first] = id
-      {mes: "あなたは先手です", id: id}
+      {order: :first, id: id}
     elsif @order_list[:second] == nil
       puts "connect second:#{id}"
       @order_list[:second] = id
-      {mes: "あなたは後手です", id: id}
+      {order: :second, id: id}
     else
       @order_list[:audience] << id
       puts "connect audience:#{id}"
-      {mes: "あなたは観戦者です", id: id}
+      {order: :audience, id: id}
     end
   end
 
@@ -196,13 +198,15 @@ class Board
 
     if can_grow? after
       if piece(after).can_next?(after)
-        return {grow: :can}
+        status = {grow: :can}
       else
-        return {grow: :must}
+        status = {grow: :must}
       end
     else
-      return {grow: :cannot}
+      status = {grow: :cannot}
     end
+    change_order
+    status
   end
   
   def player? id
@@ -222,6 +226,10 @@ class Board
     end
   end
 
+  def change_order
+    @order_first = @order_first ? false : true
+  end
+
   def set pos, kind, id
     if exist? pos
       raise ExistPiece, "駒を打とうとしている場所に駒が存在しています"
@@ -231,7 +239,7 @@ class Board
       p "観戦者は駒を動かす事はできません"
       return
     end
-    
+
     piece = Piece.new(kind, order(id), false)
     
     if @piece_stand[order(id)].include?(piece)
@@ -244,7 +252,7 @@ class Board
     else
       raise MissingPiece, "駒台に指定の駒がありません"
     end
-
+    change_order
     @data[pos[0]][pos[1]] = piece
   end
 
