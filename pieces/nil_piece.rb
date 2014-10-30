@@ -1,3 +1,5 @@
+require './pieces/piece'
+
 class NilPiece < Piece
   def ==(pce)
     pce.class == 'NilPiece'
@@ -8,7 +10,10 @@ class NilPiece < Piece
     false
   end
 
-  def disp
-    "  "
+  def grow status
+  end
+
+  def to_s
+    "   "
   end
 end

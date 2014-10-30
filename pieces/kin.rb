@@ -1,16 +1,15 @@
-require './common_move'
+require './pieces/piece'
 
 class Kin < Piece
   def move? before, after
-    return false unless CommonMove.ou before, after
+    move_kin before, after
+  end
 
-    if @player == :first
-      return false unless before[0]-1 == after[0] && before[1]-1 == after[1]
-      return false unless before[0]+1 == after[0] && before[1]-1 == after[1]
-    else
-      return false unless before[0]-1 == after[0] && before[1]+1 == after[1]
-      return false unless before[0]+1 == after[0] && before[1]+1 == after[1]
-    end
-    true
+  #TODO: 例外
+  def grow status
+  end
+
+  def to_s
+    disp "金"
   end
 end
