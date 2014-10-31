@@ -9,13 +9,13 @@ class Gin < Piece
     return false unless move_ou before, after
 
     # 銀の横腹チェック
-    return false unless before[0]-1 == after[0] && before[1] == after[1]
-    return false unless before[0]+1 == after[0] && before[1] == after[1]
+    return false if before[0]-1 == after[0] && before[1] == after[1]
+    return false if before[0]+1 == after[0] && before[1] == after[1]
 
     if @player == :first
-      return false unless before[0] == after[0] && before[1]-1 == after[1]
+      return false if before[0] == after[0] && before[1]+1 == after[1]
     else
-      return false unless before[0] == after[0] && before[1]+1 == after[1]
+      return false if before[0] == after[0] && before[1]-1 == after[1]
     end
     true
   end

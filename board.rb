@@ -1,4 +1,4 @@
-require './piece'
+require './pieces/piece'
 require 'singleton'
 
 class ExistPiece < StandardError; end
