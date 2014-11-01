@@ -1,9 +1,9 @@
 require_relative '../pieces/kaku'
 
-describe Hi do
+describe Kaku do
   describe "不成り" do
     before do
-      @pce = Hi.new
+      @pce = Kaku.new
       @pce.grow   = false
       @pce.player = :first
       
@@ -40,7 +40,7 @@ describe Hi do
 
   describe "成り" do
     before do
-      @pce = Hi.new
+      @pce = Kaku.new
       @pce.grow   = true
       @pce.player = :first
       

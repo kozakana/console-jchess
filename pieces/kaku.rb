@@ -1,6 +1,10 @@
 require './pieces/piece'
 
 class Kaku < Piece
+  def kind
+    :kaku
+  end
+
   def move? before, after
     dist_x = before[0] - after[0]
     dist_y = before[1] - after[1]

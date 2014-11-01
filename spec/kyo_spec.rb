@@ -1,11 +1,9 @@
-require_relative '../pieces/kyo'
+require './pieces/kyo'
 
 describe Kyo do
   describe "先手" do
     before do
-      @pce = Kyo.new
-      @pce.grow   = false
-      @pce.player = :first
+      @pce = Kyo.new(:first, false)
       
       @init_pos = [4, 4]
       # 行く事が可能な所はtrue
@@ -29,9 +27,7 @@ describe Kyo do
   
   describe "後手" do
     before do
-      @pce = Kyo.new
-      @pce.grow   = false
-      @pce.player = :second
+      @pce = Kyo.new(:second, false)
     
       @init_pos = [4, 4]
       # 行く事が可能な所はtrue

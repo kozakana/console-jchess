@@ -1,6 +1,10 @@
 require './pieces/piece'
 
 class Kei < Piece
+  def kind
+    :kei
+  end
+
   def move? before, after
     if @grow == true
       return move_kin before, after

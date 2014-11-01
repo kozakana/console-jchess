@@ -1,6 +1,11 @@
 require './pieces/piece'
 
 class NilPiece < Piece
+  def initialize
+    @player = nil
+    @grow   = false
+  end
+
   def ==(pce)
     pce.class == 'NilPiece'
   end

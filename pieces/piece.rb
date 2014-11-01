@@ -1,19 +1,21 @@
 # TODO: 強制的駒を成る判定(行ける所がない判定)
-# TODO: 角の行けるところ判定
 # TODO: 駒クラスに分けて行けるところ判定を駒クラスに入れる
 #       initialize / == / to_s
 
 class Piece
   attr_accessor :player, :grow
-  attr_reader :kind
   
-  def initialize kind=nil, player=nil, grow=nil
+  def initialize player=nil, grow=nil
     @player = player
     @grow   = grow
   end
 
+  def kind
+    raise NotImplementedError.new("You must implement #{self.class}##{__method__}")
+  end
+
   def ==(pce)
-    @kind == pce.kind && @player == pce.player
+    @player == pce.player
   end
 
   # 盤外かどうかのチェックはここでは無し

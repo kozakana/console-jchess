@@ -70,6 +70,8 @@ class Client
           puts "動かそうとする駒がありません"
         elsif e.message == "ExistPiece"
           puts "移動先に自分の駒があります"
+        elsif e.message == "CannotMove"
+          puts "指定場所へ動かせません"
         else
           p e
         end

@@ -1,6 +1,10 @@
 require './pieces/piece'
 
 class Hi < Piece
+  def kind
+    :hi
+  end
+
   def move? before, after
     return true if before[0] == after[0]
     return true if before[1] == after[1]

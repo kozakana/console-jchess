@@ -1,6 +1,10 @@
 require './pieces/piece'
 
 class Gin < Piece
+  def kind
+    :gin
+  end
+
   def move? before, after
     if @grow == true
       return move_kin before, after

@@ -1,6 +1,9 @@
 require './pieces/piece'
 
 class Ou < Piece
+  def kind
+    :ou
+  end
 
   def move? before, after
     move_ou before, after
@@ -12,9 +15,9 @@ class Ou < Piece
 
   def to_s
     if @player == :first
-      "王"
+      disp "王"
     else
-      "玉"
+      disp "玉"
     end
   end
 end

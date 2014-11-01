@@ -1,14 +1,25 @@
-require './pieces/piece'
+#Dir[File.expand_path('./pieces', __FILE__) << '/*.rb'].each do |file|
+#    require file
+#end
+
+require  './pieces/ou'
+require  './pieces/kin'
+require  './pieces/gin'
+require  './pieces/kei'
+require  './pieces/kyo'
+require  './pieces/fu'
+require  './pieces/hi'
+require  './pieces/kaku'
+require  './pieces/nil_piece'
 require 'singleton'
 
 class ExistPiece < StandardError; end
 class MissingPiece < StandardError; end
+class CannotMove < StandardError; end
 
 # TODO: 飛び駒の判定
 # TODO: 二歩判定
 # TODO: 観客は見るだけにする
-# TODO: 観客ステータス
-# TODO: 先後逆の駒は触れないようにする
 # TODO: ログ機能
 # TODO: 待った機能
 # TODO: 負けました機能
@@ -34,75 +45,75 @@ class Board
     @order_first = true
 
     @data << [
-              Piece.new(:kyo, :second, false), Piece.new,
-              Piece.new(:fu, :second, false),  Piece.new, 
-              Piece.new,                       Piece.new,
-              Piece.new(:fu, :first, false),   Piece.new,
-              Piece.new(:kyo, :first, false)
+              Kyo.new(:second, false), NilPiece.new,
+              Fu.new(:second, false),  NilPiece.new, 
+              NilPiece.new,            NilPiece.new,
+              Fu.new(:first, false),   NilPiece.new,
+              Kyo.new(:first, false)
              ]
 
     @data << [
-              Piece.new(:kei, :second, false), Piece.new(:kaku, :second, false),
-              Piece.new(:fu, :second, false),  Piece.new,
-              Piece.new,                       Piece.new,
-              Piece.new(:fu, :first, false),   Piece.new(:hi, :first, false),
-              Piece.new(:kei, :first, false)
+              Kei.new(:second, false), Kaku.new(:second, false),
+              Fu.new(:second, false),  NilPiece.new,
+              NilPiece.new,            NilPiece.new,
+              Fu.new(:first, false),   Hi.new(:first, false),
+              Kei.new(:first, false)
              ]
 
     @data << [
-              Piece.new(:gin, :second, false), Piece.new,
-              Piece.new(:fu, :second, false),  Piece.new,
-              Piece.new,                       Piece.new,
-              Piece.new(:fu, :first, false),   Piece.new,
-              Piece.new(:gin, :first, false)
+              Gin.new(:second, false), NilPiece.new,
+              Fu.new(:second, false),  NilPiece.new,
+              NilPiece.new,            NilPiece.new,
+              Fu.new(:first, false),   NilPiece.new,
+              Gin.new(:first, false)
              ]
 
     @data << [
-              Piece.new(:kin, :second, false), Piece.new,
-              Piece.new(:fu, :second, false),  Piece.new,
-              Piece.new,                       Piece.new,
-              Piece.new(:fu, :first, false),   Piece.new,
-              Piece.new(:kin, :first, false)
+              Kin.new(:second, false), NilPiece.new,
+              Fu.new(:second, false),  NilPiece.new,
+              NilPiece.new,            NilPiece.new,
+              Fu.new(:first, false),   NilPiece.new,
+              Kin.new(:first, false)
              ]
 
     @data << [
-              Piece.new(:ou, :second,false),    Piece.new,
-              Piece.new(:fu, :second, false),   Piece.new,
-              Piece.new,                        Piece.new,
-              Piece.new(:fu, :first, false),    Piece.new,
-              Piece.new(:ou, :first, false)
+              Ou.new(:second,false),    NilPiece.new,
+              Fu.new(:second, false),   NilPiece.new,
+              NilPiece.new,             NilPiece.new,
+              Fu.new(:first, false),    NilPiece.new,
+              Ou.new(:first, false)
              ]
 
     @data << [
-              Piece.new(:kin, :second, false), Piece.new,
-              Piece.new(:fu, :second, false),  Piece.new,
-              Piece.new,                       Piece.new,
-              Piece.new(:fu, :first, false),   Piece.new,
-              Piece.new(:kin, :first, false)
+              Kin.new(:second, false), NilPiece.new,
+              Fu.new(:second, false),  NilPiece.new,
+              NilPiece.new,            NilPiece.new,
+              Fu.new(:first, false),   NilPiece.new,
+              Kin.new(:first, false)
              ]
 
     @data << [
-              Piece.new(:gin, :second, false), Piece.new,
-              Piece.new(:fu, :second, false),  Piece.new,
-              Piece.new,                       Piece.new,
-              Piece.new(:fu, :first, false),   Piece.new,
-              Piece.new(:gin, :first, false)
+              Gin.new(:second, false), NilPiece.new,
+              Fu.new(:second, false),  NilPiece.new,
+              NilPiece.new,            NilPiece.new,
+              Fu.new(:first, false),   NilPiece.new,
+              Gin.new(:first, false)
              ]
 
     @data << [
-              Piece.new(:kei, :second, false), Piece.new(:hi, :second, false),
-              Piece.new(:fu, :second, false),  Piece.new,
-              Piece.new,                       Piece.new,
-              Piece.new(:fu, :first, false),   Piece.new(:kaku, :first, false),
-              Piece.new(:kei, :first, false)
+              Kei.new(:second, false), Hi.new(:second, false),
+              Fu.new(:second, false),  NilPiece.new,
+              NilPiece.new,            NilPiece.new,
+              Fu.new(:first, false),   Kaku.new(:first, false),
+              Kei.new(:first, false)
              ]
 
     @data << [
-              Piece.new(:kyo, :second, false), Piece.new,
-              Piece.new(:fu, :second, false),  Piece.new,
-              Piece.new,                       Piece.new,
-              Piece.new(:fu, :first, false),   Piece.new,
-              Piece.new(:kyo, :first, false)
+              Kyo.new(:second, false),  NilPiece.new,
+              Fu.new(:second, false),   NilPiece.new,
+              NilPiece.new,             NilPiece.new,
+              Fu.new(:first, false),    NilPiece.new,
+              Kyo.new(:first, false)
              ]
   end
 
@@ -175,9 +186,13 @@ class Board
         p "観戦者は駒を動かす事は出来ません"
         return
       else
-        p "自分の駒以外は動かせません"
+        p "指定場所へ動かせません"
         return
       end
+    end
+
+    unless orig_piece.move? before, after
+      raise CannotMove, "そこへは動かせません"
     end
 
     if exist? after
@@ -194,10 +209,10 @@ class Board
     end
 
     @data[after[0]][after[1]]   = @data[before[0]][before[1]]
-    @data[before[0]][before[1]] = Piece.new
+    @data[before[0]][before[1]] = NilPiece.new
 
     if can_grow? after
-      if piece(after).can_next?(after)
+      if can_next? after
         status = {grow: :can}
       else
         status = {grow: :must}
@@ -240,7 +255,7 @@ class Board
       return
     end
 
-    piece = Piece.new(kind, order(id), false)
+    piece = piece_incetance(kind, order(id), false)
     
     if @piece_stand[order(id)].include?(piece)
       @piece_stand[order(id)].each_with_index do |p, i|
@@ -254,6 +269,27 @@ class Board
     end
     change_order
     @data[pos[0]][pos[1]] = piece
+  end
+
+  def piece_incetance kind, order, grow
+    case kind
+    when :ou
+      Ou.new(order, grow)
+    when :kin
+      Kin.new(order, grow)
+    when :gin
+      Gin.new(order, grow)
+    when :kei
+      Kei.new(order, grow)
+    when :kyo
+      Kyo.new(order, grow)
+    when :fu
+      Fu.new(order, grow)
+    when :hi
+      Hi.new(order, grow)
+    when :kaku
+      Kaku.new(order, grow)
+    end
   end
 
   def exist? pos
@@ -274,6 +310,29 @@ class Board
       true if pos[1] <= 2
     else
       true if pos[1] >= 6
+    end
+  end
+
+  def can_next? pos
+    pce = piece(pos)
+    return true if pce.grow == true
+    case pce.kind
+    when :kei
+      if pce.player == :first
+        false if pos[1] <= 1
+      else
+        false if pos[1] >= 7
+      end
+      true
+    when :kyo, :fu
+      if pce.player == :first
+        false if pos[1] <= 0
+      else
+        false if pos[1] >= 8
+      end
+      true
+    else
+      true
     end
   end
   
