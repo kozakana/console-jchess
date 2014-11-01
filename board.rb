@@ -186,13 +186,13 @@ class Board
         p "観戦者は駒を動かす事は出来ません"
         return
       else
-        p "指定場所へ動かせません"
+        p "自分の駒以外は動かせません"
         return
       end
     end
 
     unless orig_piece.move? before, after
-      raise CannotMove, "そこへは動かせません"
+      raise CannotMove, "指定場所へは動かせません"
     end
 
     if exist? after
