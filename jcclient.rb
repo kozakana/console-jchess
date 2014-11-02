@@ -3,8 +3,6 @@ require 'optparse'
 require 'readline'
 require 'pry'
 
-class CmmandFail < StandardError; end
-
 IDFILE = "./.jcid"
 
 class Client
@@ -55,7 +53,6 @@ class Client
 
     case com[0]
     when "move", "mv" then
-      #  raise CommandFail, "コマンドが間違っています\nmove_full 33 34"
       before = []; after = []
 
       before[0] = com[1][0].to_i - 1

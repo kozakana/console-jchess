@@ -19,11 +19,10 @@ class CannotMove < StandardError; end
 
 # TODO: 飛び駒の判定
 # TODO: 二歩判定
-# TODO: 観客は見るだけにする
 # TODO: ログ機能
 # TODO: 待った機能
 # TODO: 負けました機能
-# TODO: 交互にしか指せなくする
+# TODO: 自分の駒のあるところへは動けないように
 
 class Board
   include Singleton
@@ -189,6 +188,10 @@ class Board
         p "自分の駒以外は動かせません"
         return
       end
+    end
+    
+    if piece(after).player == order(id)
+      raise CannotMove, "指定場所へは動かせません"
     end
 
     unless orig_piece.move? before, after
