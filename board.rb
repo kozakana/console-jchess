@@ -191,11 +191,19 @@ class Board
     end
     
     if piece(after).player == order(id)
-      raise CannotMove, "指定場所へは動かせません"
+      raise ExistPiece, "自分の駒は取れません"
     end
 
     unless orig_piece.move? before, after
       raise CannotMove, "指定場所へは動かせません"
+    end
+
+    rlist = road_list piece(before), before, after
+    rlist.each do |pos|
+      if piece(pos).kind != :nil
+        p "他の駒は飛び越えられません"
+        raise CannotMove, "他の駒は飛び越えられません"
+      end
     end
 
     if exist? after
@@ -341,5 +349,33 @@ class Board
   
   def grow_piece pos
     piece(pos).grow = true
+  end
+
+  def road_list piece, before, after
+    mlist = move_list piece, before
+    rlist = []
+    orig_dist = Math.sqrt((before[0]-after[0])**2 + (before[1]-after[1])**2)
+    mlist.each do |pos|
+      dist = Math.sqrt((pos[0]-after[0])**2 + (pos[1]-after[1])**2)
+
+      if orig_dist > dist && dist != 0
+        rlist << pos
+      end
+    end
+
+    rlist
+  end
+
+  def move_list piece, pos
+    list = []
+    9.times do |x|
+      9.times do |y|
+        if piece.move? pos, [x, y]
+          #dist = Math.sqrt((pos[0]-x)**2 + (pos[1]-y)**2)
+          list << [x, y]
+        end
+      end
+    end
+    list
   end
 end

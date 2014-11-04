@@ -6,6 +6,10 @@ class NilPiece < Piece
     @grow   = false
   end
 
+  def kind
+    :nil
+  end
+
   def ==(pce)
     pce.class == 'NilPiece'
   end
