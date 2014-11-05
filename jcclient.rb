@@ -192,6 +192,12 @@ consol =
 
 consol += "> "
 
+WORDS = %w(foo foobar foobaz)
+
+Readline.completion_proc = proc {|word|
+      WORDS.grep(/\A#{Regexp.quote word}/)
+}
+
 loop do
   unless cl.my_order?
     sleep 1
