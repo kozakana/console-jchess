@@ -12,6 +12,7 @@ require './pieces/hi'
 require './pieces/kaku'
 require './pieces/nil_piece'
 require 'singleton'
+require './board_data'
 
 class ExistPiece < StandardError; end
 class MissingPiece < StandardError; end
@@ -108,21 +109,18 @@ class Board
     end
 
     if exist? after
-      captured = @data[after[0], after[1]]
+      p captured = @data[after[0], after[1]]
       if captured.player == :first
         captured.player = :second
         captured.grow = false
-        #@piece_stand[:second] << captured
-        push_stand :second, captured
+        @data.to_stand :second, captured
       else
         captured.player = :first
         captured.grow = false
-        #@piece_stand[:first] << captured
-        push_stand :first, captured
+        to_stand :first, captured
       end
     end
-
-    @data[after[0], after[1]]   = @data[before[0], before[1]]
+    @data[after[0],  after[1]]  = @data[before[0], before[1]]
     @data[before[0], before[1]] = NilPiece.new
 
     if can_grow? after
@@ -171,13 +169,8 @@ class Board
 
     piece = piece_incetance(kind, order(id), false)
     
-    if @piece_stand[order(id)].include?(piece)
-      @piece_stand[order(id)].each_with_index do |p, i|
-        if p == piece
-          @piece_stand[order(id)].delete_at i
-          break
-        end
-      end
+    if @data.on_stand? order(id), piece
+      @data.del_piece order, piece
     else
       raise MissingPiece, "駒台に指定の駒がありません"
     end

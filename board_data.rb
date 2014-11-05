@@ -95,11 +95,23 @@ class BoardData
   end
 
   # TODO　修正中
-  def push_stand order, piece
+  def to_stand order, piece
+    p "to_stand"
     @piece_stand[order] << piece
   end
 
-  def on_stand? 
+  def on_stand? order, piece
+    @piece_stand[order].include?(piece)
+  end
+
+  def del_piece order, piece
+    @piece_stand[order(id)].each_with_index do |p, i|
+      if p == piece
+        @piece_stand[order(id)].delete_at i
+        break
+      end
+    end
+  end
 
   def to_s
     str  = "後手持駒："
