@@ -108,7 +108,7 @@ class Client
         end
         return false
       end
-    #when "print" then
+    when "print" then
     when "help" then
       f = open("./doc/help.txt")
       puts f.read
@@ -151,12 +151,6 @@ class Client
   end
 end
 
-#if ARGV.length == 0
-#  ipaddr = "localhost"
-#else
-#  ipaddr = ARGV[0]
-#end
-
 def cmdline
   args = {ipaddr: "localhost", port: "1117"}
   OptionParser.new do |parser|
@@ -192,7 +186,7 @@ consol =
 
 consol += "> "
 
-WORDS = %w(foo foobar foobaz)
+WORDS = %w(move set print help)
 
 Readline.completion_proc = proc {|word|
       WORDS.grep(/\A#{Regexp.quote word}/)

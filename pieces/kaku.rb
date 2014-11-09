@@ -20,6 +20,6 @@ class Kaku < Piece
   end
 
   def to_s
-    disp "飛"
+    disp "角"
   end
 end
