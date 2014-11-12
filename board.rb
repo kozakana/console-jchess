@@ -92,12 +92,12 @@ class Board
       end
     end
     
-    if piece(after).player == order(id)
-      raise ExistPiece, "自分の駒は取れません"
-    end
-
     unless orig_piece.move? before, after
       raise CannotMove, "指定場所へは動かせません"
+    end
+
+    if piece(after).player == order(id)
+      raise ExistPiece, "自分の駒は取れません"
     end
 
     rlist = road_list piece(before), before, after
