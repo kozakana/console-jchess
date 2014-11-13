@@ -103,7 +103,6 @@ class Board
     rlist = road_list piece(before), before, after
     rlist.each do |pos|
       if piece(pos).kind != :nil
-        p "他の駒は飛び越えられません"
         raise CannotMove, "他の駒は飛び越えられません"
       end
     end
@@ -252,13 +251,14 @@ class Board
     rlist = []
     orig_dist = Math.sqrt((before[0]-after[0])**2 + (before[1]-after[1])**2)
     mlist.each do |pos|
-      dist = Math.sqrt((pos[0]-after[0])**2 + (pos[1]-after[1])**2)
+      dist_a_p = Math.sqrt((pos[0]-after[0])**2 + (pos[1]-after[1])**2)
+      dist_b_p = Math.sqrt((pos[0]-before[0])**2 + (pos[1]-before[1])**2)
 
-      if orig_dist > dist && dist != 0
+      if orig_dist > dist_a_p && dist_a_p != 0 &&
+         (dist_a_p + dist_b_p) == orig_dist
         rlist << pos
       end
     end
-
     rlist
   end
 
