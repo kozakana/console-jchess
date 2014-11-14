@@ -75,6 +75,10 @@ class Board
     @data.to_s
   end
 
+  def display order
+    @data.display order
+  end
+
   def move before, after, id
     unless exist? before
       raise MissingPiece, "動かそうとする駒がありません"

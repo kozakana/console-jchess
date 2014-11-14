@@ -2,6 +2,7 @@ require 'singleton'
 
 class BoardData
   include Singleton
+  LINE_TITLE = ["一", "二", "三", "四", "五", "六", "七", "八", "九"]
 
   def initialize
     init_board
@@ -120,7 +121,6 @@ class BoardData
     end
     str += "\n"
     str += " 9   8   7   6   5   4   3   2   1 \n"
-    line_title = ["一", "二", "三", "四", "五", "六", "七", "八", "九"]
 
     9.times do |y|
       9.times do |x|
@@ -135,6 +135,72 @@ class BoardData
       str += pce.to_s
     end
     str += "\n"
+    str
+  end
+
+  def display order
+    case order
+    when :first
+      disp_first
+    when :second
+      disp_second
+    end
+  end
+
+  def disp_first
+    ltitle = LINE_TITLE
+
+    str  = "\e[31m"
+    str += "\n☖ 後手持駒："
+    @piece_stand[:second].each do |pce|
+      str += pce.to_s
+    end
+    str += "\n\e[0m"
+    str += " 9   8   7   6   5   4   3   2   1 \n"
+
+    9.times do |y|
+      9.times do |x|
+        str += @data[8-x][y].to_s
+        str += "|"
+      end
+      str += "#{ltitle[y]}\n"
+    end
+
+    str += "\e[32m☗ 先手持駒："
+    @piece_stand[:first].each do |pce|
+      str += pce.to_s
+    end
+    str += "\n\n\e[0m"
+    str
+  end
+
+  def disp_second
+    ltitle = LINE_TITLE.reverse
+
+    str  = "\e[32m"
+    str += "\n☗ 先手持駒："
+    @piece_stand[:first].each do |pce|
+      str += pce.to_s
+    end
+    str += "\n\e[0m"
+
+    9.times do |y|
+      str += "#{ltitle[y]}"
+      9.times do |x|
+        str += @data[x][8-y].to_s
+        str += "|"
+      end
+      str += "\n"
+    end
+
+    str += "   1   2   3   4   5   6   7   8   9 \n"
+
+    str += "\e[31m☖ 後手持駒："
+    @piece_stand[:second].each do |pce|
+      str += pce.to_s
+    end
+
+    str += "\n\n\e[0m"
     str
   end
 end
