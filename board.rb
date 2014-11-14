@@ -249,13 +249,15 @@ class Board
   def road_list piece, before, after
     mlist = move_list piece, before
     rlist = []
-    orig_dist = Math.sqrt((before[0]-after[0])**2 + (before[1]-after[1])**2)
+    orig_dist = Math.sqrt((before[0]-after[0])**2 + (before[1]-after[1])**2).round(2)
     mlist.each do |pos|
       dist_a_p = Math.sqrt((pos[0]-after[0])**2 + (pos[1]-after[1])**2)
       dist_b_p = Math.sqrt((pos[0]-before[0])**2 + (pos[1]-before[1])**2)
+      sum_dist = (dist_a_p + dist_b_p).round(2)
+      dist_a_p = dist_a_p.round(2)
+      dist_b_p = dist_b_p.round(2)
 
-      if orig_dist > dist_a_p && dist_a_p != 0 &&
-         (dist_a_p + dist_b_p) == orig_dist
+      if orig_dist > dist_a_p && dist_a_p != 0 && sum_dist == orig_dist
         rlist << pos
       end
     end

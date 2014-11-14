@@ -20,8 +20,6 @@ server = "druby://:#{args[:port]}"
 
 sv = DRb.start_service(server, Board.instance)
 
-#binding.pry
-
 while true
   sleep 1
 end

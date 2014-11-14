@@ -95,8 +95,41 @@ describe Board do
     end
   
     describe "角行" do
+      before do
+        @kaku_result = Array.new(9).map{ Array.new(9, CannotMove) }
+        @kaku_result[0][0] = :success
+        @kaku_result[0][8] = CannotMove
+        @kaku_result[1][1] = :success
+        @kaku_result[1][7] = ExistPiece
+        @kaku_result[2][2] = :success
+        @kaku_result[2][6] = :success
+        @kaku_result[3][3] = :success
+        @kaku_result[3][5] = :success
+        @kaku_result[4][4] = ExistPiece
+        @kaku_result[5][3] = :success
+        @kaku_result[5][5] = :success
+        @kaku_result[6][2] = :success
+        @kaku_result[6][6] = :success
+        @kaku_result[7][1] = :success
+        @kaku_result[7][7] = :success
+        @kaku_result[8][0] = :success
+        @kaku_result[8][8] = :success
+      end
   
-  
+      it "moveのテスト" do
+        9.times do |x|
+          9.times do |y|
+            init
+            if @kaku_result[x][y] == :success
+              @board.move [@kaku_pos[0], @kaku_pos[1]], [x,y], ID
+            else
+              expect do
+                @board.move [@kaku_pos[0], @kaku_pos[1]], [x,y], ID
+              end.to raise_error( @kaku_result[x][y] )
+            end
+          end
+        end
+      end
     end
   end
 end
