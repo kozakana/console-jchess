@@ -31,7 +31,7 @@ class Client
   end
 
   def print
-    puts @obj.to_s
+    puts @obj.disp @order
   end
 
   def print_order order
@@ -53,73 +53,85 @@ class Client
 
     case com[0]
     when "move", "mv" then
-      before = []; after = []
-
-      before[0] = com[1][0].to_i - 1
-      before[1] = com[1][1].to_i - 1
-
-      after[0]  = com[2][0].to_i - 1
-      after[1]  = com[2][1].to_i - 1
-      begin
-        status = @obj.move before, after, @id
-      rescue => e
-        if e.message == "MissingPiece"
-          puts "動かそうとする駒がありません"
-        elsif e.message == "ExistPiece"
-          puts "移動先に自分の駒があります"
-        elsif e.message == "CannotMove"
-          puts "指定場所へ動かせません"
-        else
-          p e
-        end
-        return false
-      end
-      
-      if status == nil
-        return false
-      end
-
-      if status[:grow] == :can
-        if grow_ask
-          @obj.grow_piece after
-        end
-      elsif status[:grow] == :must
-        @obj.piece(after).grow = true
-      end
+      com_move com
+      puts @obj.disp @order
     when "set" then
-      com = str.split(" ")
-      pos = []
-      pos[0] = com[1][0].to_i - 1
-      pos[1] = com[1][1].to_i - 1
-      unless piece_name? com[2]
-        puts "駒の指定が間違っています"
-        return false
-      end
-      kind = com[2].to_sym
-      begin
-        @obj.set pos, kind, @id
-      rescue => e
-        if e.message == "MissingPiece"
-          puts "駒台に駒がありません"
-        elsif e.message == "ExistPiece"
-          puts "打つ場所に自分の駒があります"
-        else
-          p e
-        end
-        return false
-      end
+      com_set com
+      puts @obj.disp @order
     when "print" then
+      odr = case com[1]
+      when "first"
+        :first
+      when "second"
+        :second
+      else
+        @order
+      end
+      puts @obj.disp odr
     when "help" then
       f = open("./doc/help.txt")
       puts f.read
       f.close
-      return false
     else
       puts "コマンドが間違っています"
-      return false
     end
-    puts @obj.to_s
-    return true
+  end
+
+  def com_move com
+    before = []; after = []
+
+    before[0] = com[1][0].to_i - 1
+    before[1] = com[1][1].to_i - 1
+
+    after[0]  = com[2][0].to_i - 1
+    after[1]  = com[2][1].to_i - 1
+    begin
+      status = @obj.move before, after, @id
+    rescue => e
+      if e.message == "MissingPiece"
+        puts "動かそうとする駒がありません"
+      elsif e.message == "ExistPiece"
+        puts "移動先に自分の駒があります"
+      elsif e.message == "CannotMove"
+        puts "指定場所へ動かせません"
+      else
+        p e
+      end
+      return
+    end
+    
+    return if status == nil
+
+    if status[:grow] == :can
+      if grow_ask
+        @obj.grow_piece after
+      end
+    elsif status[:grow] == :must
+      @obj.piece(after).grow = true
+    end
+  end
+
+  def com_set com
+    com = str.split(" ")
+    pos = []
+    pos[0] = com[1][0].to_i - 1
+    pos[1] = com[1][1].to_i - 1
+    unless piece_name? com[2]
+      puts "駒の指定が間違っています"
+      return
+    end
+    kind = com[2].to_sym
+    begin
+      @obj.set pos, kind, @id
+    rescue => e
+      if e.message == "MissingPiece"
+        puts "駒台に駒がありません"
+      elsif e.message == "ExistPiece"
+        puts "打つ場所に自分の駒があります"
+      else
+        p e
+      end
+    end
   end
   
   def my_order?
@@ -192,12 +204,13 @@ Readline.completion_proc = proc {|word|
       WORDS.grep(/\A#{Regexp.quote word}/)
 }
 
+cl.print
+
 loop do
   unless cl.my_order?
     sleep 1
     next
   end
-  cl.print
   line = Readline::readline(consol)
   break if line.nil? || line == 'quit'
   Readline::HISTORY.push(line)

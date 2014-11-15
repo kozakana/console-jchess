@@ -114,31 +114,7 @@ class BoardData
     end
   end
 
-  def to_s
-    str  = "後手持駒："
-    @piece_stand[:second].each do |pce|
-      str += pce.to_s
-    end
-    str += "\n"
-    str += " 9   8   7   6   5   4   3   2   1 \n"
-
-    9.times do |y|
-      9.times do |x|
-        str += @data[8-x][y].to_s
-        str += "|"
-      end
-      str += "#{line_title[y]}\n"
-    end
-
-    str += "先手持駒："
-    @piece_stand[:first].each do |pce|
-      str += pce.to_s
-    end
-    str += "\n"
-    str
-  end
-
-  def display order
+  def disp order
     case order
     when :first
       disp_first

@@ -71,12 +71,12 @@ class Board
     end
   end
 
-  def to_s
-    @data.to_s
-  end
-
-  def display order
-    @data.display order
+  def disp order
+    if order == :audience
+      @data.disp :first
+    else
+      @data.disp order
+    end
   end
 
   def move before, after, id
