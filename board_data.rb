@@ -1,14 +1,7 @@
-require 'singleton'
-
 class BoardData
-  include Singleton
   LINE_TITLE = ["一", "二", "三", "四", "五", "六", "七", "八", "九"]
 
   def initialize
-    init_board
-  end
-
-  def init_board
     @data = []
     @piece_stand = {}
     @piece_stand[:first]  = []

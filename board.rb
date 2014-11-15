@@ -18,28 +18,26 @@ class ExistPiece < StandardError; end
 class MissingPiece < StandardError; end
 class CannotMove < StandardError; end
 
-# TODO: 飛び駒の判定
 # TODO: 二歩判定
 # TODO: ログ機能
 # TODO: 待った機能
 # TODO: 負けました機能
-# TODO: 自分の駒のあるところへは動けないように
 
 class Board
   include Singleton
   attr_reader :order_first
+  attr_accessor :status
   
   def initialize
-    @data = BoardData.instance
+    @data = BoardData.new
     # @player[:first][:name]    = ""    # TODO
     # @player[:second][:name]   = ""    # TODO
     @order_list = {}
     @order_list[:audience] = Array.new
     @order_first = true
+    @status = :playing
   end
 
-
-  # TODO: id
   def connecting id
     if @order_list.value? id
       if @order_list[:first] == id

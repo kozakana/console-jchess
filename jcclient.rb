@@ -58,6 +58,16 @@ class Client
     when "set" then
       com_set com
       puts @obj.disp @order
+    when "makemashita", "mairimashita"
+      @obj.status =
+        case @order
+        when :first
+          :win_first
+        when :second
+          :win_second
+        end
+      puts "あなたの負けです"
+      exit
     when "print" then
       odr = case com[1]
       when "first"
@@ -161,6 +171,15 @@ class Client
     name_list = ["ou", "kin", "gin", "kei", "kyo", "fu", "kaku", "hi"]
     name_list.include? name
   end
+
+  def game_finish?
+    if @obj.status == :win_first ||
+       @obj.status == :win_second
+      true
+    else
+      false
+    end
+  end
 end
 
 def cmdline
@@ -207,10 +226,16 @@ Readline.completion_proc = proc {|word|
 cl.print
 
 loop do
+  if cl.game_finish?
+    puts "相手が投了しました"
+    exit
+  end
+
   unless cl.my_order?
     sleep 1
     next
   end
+
   line = Readline::readline(consol)
   break if line.nil? || line == 'quit'
   Readline::HISTORY.push(line)

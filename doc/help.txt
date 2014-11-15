@@ -1,5 +1,6 @@
 move [before] [after]
   駒の移動
+  エイリアス：mv
   例：
   ３三から３四への駒の移動
   move 33 34
@@ -12,5 +13,11 @@ set [pos] [kind]
   駒台の歩を３四に打つ
   set 34 fu
 
-print
-  盤面を表示
+print [order]
+  order: first | second
+  先手(first)後手(second)から見た盤面を表示
+  デフォルト：first
+
+makemashita
+  投了してゲーム終了
+  エイリアス：mairimashita
