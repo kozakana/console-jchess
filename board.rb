@@ -17,6 +17,7 @@ require './board_data'
 class ExistPiece < StandardError; end
 class MissingPiece < StandardError; end
 class CannotMove < StandardError; end
+class Nifu < StandardError; end
 
 # TODO: 二歩判定
 # TODO: ログ機能
@@ -168,6 +169,10 @@ class Board
       return
     end
 
+    if exist_column_fu? pos[0], order(id)
+      raise Nifu, "二歩です"
+    end
+
     piece = piece_incetance(kind, order(id), false)
     
     if @data.on_stand? order(id), piece
@@ -177,6 +182,17 @@ class Board
     end
     change_order
     @data[pos[0], pos[1]] = piece
+  end
+
+  def exist_column_fu? column, order
+    9.times do |row|
+      pce = @data[column][row]
+      if pce.player == order && pce.grow == false
+        return false
+      end
+    end
+
+    return true
   end
 
   def piece_incetance kind, order, grow
