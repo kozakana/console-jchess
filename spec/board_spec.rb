@@ -3,21 +3,26 @@ require_relative '../board'
 ID = 1
 
 def init
+  @fu_pos  = [0, 6]
   @kyo_pos  = [1, 7]
   @kaku_pos = [4, 4]
   @hi_pos   = [4, 7]
 
   data = Array.new(9).map{ Array.new(9, NilPiece.new) }
-  data[@kyo_pos[0]][@kyo_pos[1]] =  Kyo.new(:first, false)
+  data[@fu_pos[0]][@fu_pos[1]]     =  Fu.new(:first, false)
+  data[@kyo_pos[0]][@kyo_pos[1]]   =  Kyo.new(:first, false)
   data[@kaku_pos[0]][@kaku_pos[1]] =  Kaku.new(:first, false)
-  data[@hi_pos[0]][@hi_pos[1]] =  Hi.new(:first, false)
-  board_data = BoardData.instance
+  data[@hi_pos[0]][@hi_pos[1]]     =  Hi.new(:first, false)
+  board_data = BoardData.new
   board_data.instance_eval do 
     @data = data
   end
+
+  # TODO:持ち駒に歩を置いておく
   @board = Board.instance
   @board.instance_eval do
     @data = board_data
+    @data.to_stand :first, Fu.new(:first, false)
     @order_list[:first] = ID
   end
 end
@@ -127,6 +132,41 @@ describe Board do
                 @board.move [@kaku_pos[0], @kaku_pos[1]], [x,y], ID
               end.to raise_error( @kaku_result[x][y] )
             end
+          end
+        end
+      end
+    end
+  end
+
+  describe "二歩判定" do
+    before do
+      @nifu_result = Array.new(9).map{ Array.new(9, :success) }
+      @nifu_result[0][0] = Nifu
+      @nifu_result[0][1] = Nifu
+      @nifu_result[0][2] = Nifu
+      @nifu_result[0][3] = Nifu
+      @nifu_result[0][4] = Nifu
+      @nifu_result[0][5] = Nifu
+      @nifu_result[0][6] = ExistPiece
+      @nifu_result[0][7] = Nifu
+      @nifu_result[0][8] = Nifu
+
+      @nifu_result[1][7] = ExistPiece
+      @nifu_result[4][4] = ExistPiece
+      @nifu_result[4][7] = ExistPiece
+    end
+
+    it "setのテスト" do
+      9.times do |x|
+        9.times do |y|
+          init
+          p "x:#{x} y:#{y}"
+          if @nifu_result[x][y] == :success
+            @board.set [@nifu_pos[0], @nifu_pos[1]], :fu, ID
+          else
+            expect do
+              @board.set [@nifu_pos[0], @nifu_pos[1]], :fu, ID
+            end.to raise_error( @nifu_result[x][y] )
           end
         end
       end

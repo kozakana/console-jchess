@@ -90,7 +90,6 @@ class BoardData
 
   # TODO　修正中
   def to_stand order, piece
-    p "to_stand"
     @piece_stand[order] << piece
   end
 
