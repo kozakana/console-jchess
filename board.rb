@@ -26,7 +26,7 @@ class Nifu < StandardError; end
 
 class Board
   include Singleton
-  attr_reader :order_first
+  attr_reader :order_first, :number_of_moves
   attr_accessor :status
   
   def initialize
@@ -37,6 +37,7 @@ class Board
     @order_list[:audience] = Array.new
     @order_first = true
     @status = :playing
+    @number_of_moves = 0
   end
 
   def connecting id
@@ -156,6 +157,7 @@ class Board
   end
 
   def change_order
+    @number_of_moves += 1
     @order_first = @order_first ? false : true
   end
 

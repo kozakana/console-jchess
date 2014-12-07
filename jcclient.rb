@@ -180,6 +180,10 @@ class Client
       false
     end
   end
+
+  def number_of_moves
+    @obj.number_of_moves
+  end
 end
 
 def cmdline
@@ -201,31 +205,40 @@ end
 
 args = cmdline
 cl = Client.new args
-unless cl.my_order?
-  cl.print
-end
+#unless cl.my_order?
+#  cl.print
+#end
+
+WORDS = %w(move set print help)
+
 
 consol = 
   case cl.order
   when :first
-    "先手"
+    "先手> "
   when :second
-    "後手"
+    "後手> "
   else
-    "観戦者"
+    "観戦者> "
   end
-
-consol += "> "
-
-WORDS = %w(move set print help)
 
 Readline.completion_proc = proc {|word|
       WORDS.grep(/\A#{Regexp.quote word}/)
 }
 
 cl.print
+tmp_order = 0
 
 loop do
+  if cl.order == :audience
+    if tmp_order != cl.number_of_moves
+      cl.print
+      tmp_order = cl.number_of_moves
+    end
+    sleep 1
+    next
+  end
+
   if cl.game_finish?
     puts "相手が投了しました"
     exit
@@ -236,6 +249,7 @@ loop do
     next
   end
 
+  cl.print
   line = Readline::readline(consol)
   break if line.nil? || line == 'quit'
   Readline::HISTORY.push(line)
