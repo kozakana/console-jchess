@@ -9,7 +9,6 @@ class Client
   attr_reader :order
 
   def initialize param
-    DRb.start_service
     @obj = DRbObject.new_with_uri("druby://#{param[:ipaddr]}:#{param[:port]}")
     
     # 再接続の場合
