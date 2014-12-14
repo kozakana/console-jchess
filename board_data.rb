@@ -98,9 +98,9 @@ class BoardData
   end
 
   def del_piece order, piece
-    @piece_stand[order(id)].each_with_index do |p, i|
+    @piece_stand[order].each_with_index do |p, i|
       if p == piece
-        @piece_stand[order(id)].delete_at i
+        @piece_stand[order].delete_at i
         break
       end
     end

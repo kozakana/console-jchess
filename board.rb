@@ -19,10 +19,8 @@ class MissingPiece < StandardError; end
 class CannotMove < StandardError; end
 class Nifu < StandardError; end
 
-# TODO: 二歩判定
 # TODO: ログ機能
 # TODO: 待った機能
-# TODO: 負けました機能
 
 class Board
   include Singleton
@@ -171,14 +169,14 @@ class Board
       return
     end
 
-    if exist_column_fu? pos[0], order(id)
+    if exist_column_fu?(pos[0], order(id))
       raise Nifu, "二歩です"
     end
 
     piece = piece_incetance(kind, order(id), false)
     
     if @data.on_stand? order(id), piece
-      @data.del_piece order, piece
+      @data.del_piece order(id), piece
     else
       raise MissingPiece, "駒台に指定の駒がありません"
     end
@@ -188,13 +186,13 @@ class Board
 
   def exist_column_fu? column, order
     9.times do |row|
-      pce = @data[column][row]
-      if pce.player == order && pce.grow == false
-        return false
+      pce = @data[column, row]
+      if pce.player == order && pce.grow == false && pce.class == Fu
+        return true
       end
     end
 
-    return true
+    return false
   end
 
   def piece_incetance kind, order, grow
@@ -295,5 +293,120 @@ class Board
       end
     end
     list
+  end
+
+  def check_mate? id
+    now_order = order id
+    oute? now_order
+    # 自分の王の場所を探す
+    position = ou_enemy_pos now_order
+    # 王手がかかっているか？
+    oute_list = get_oute_list(position[:ou], position[:enemy])
+    return false if oute_list == nil
+
+    # 王手をかけている駒を王以外で取れるか
+    if oute_list.length == 1
+      if remove_oute(oute_list, position[:friend])
+        return false
+      end
+    end
+
+    # 合駒可能か？
+    if can_guard? oute_list
+      return false
+    end
+
+    # 王の移動出来る場所を探す
+    # 動かしてみてもう一度上の処理で撮れる状態か
+
+  end
+
+  def can_guard? now_order, pos_ou, oute_list
+    if @data.piece_stand[now_order].length < 1
+      return false
+    end
+    
+    oute_list.each do |enemy|
+      pce = piece(enemy)
+      if pce.kind == :fu || 
+         pce.kind == :kyo || 
+         pce.kind == :hi  || 
+         pce.kind == :kaku
+
+        rlist = road_list(pce, enemy, pos_ou)
+        rlist.each do |fly_pos|
+          if piece(fly_pos).kind == nil
+            # TODO: 駒を置く事が可能か
+            if exist_column_fu?(pos[0], order(id))
+            end
+          end
+        end
+      end
+    end
+    false
+  end
+
+  def set_piece? pce, pos, now_order
+    case pce.kind
+    when :fu
+      if exist_column_fu?(pos[0], now_order)
+        false
+      else
+        true
+      end
+    when :kyo, :kaku, :hi
+      rlist = road_list(pce, enemy, pos_ou)
+      rlist.each do |fly_pos|
+        if piece(fly_pos).kind == nil
+        end
+      end
+    else
+      true
+    end
+  end
+
+  def remove_oute oute_list, friend_list
+    oute_list.each do |enemy|
+      position[:friend].each do |friend|
+        if piece(friend).move?(friend, enemy)
+          return true
+        end
+      end
+    end
+    false
+  end
+
+  def get_pos now_order
+    ou = nil
+    enemy = []
+    friend = []
+    9.times do |x|
+      9.times do |y|
+        pce = @data[x,y]
+        if pce.player == now_order
+          if pce.kind == :ou
+            ou = [x, y]
+          else
+            friend << [x, y]
+          end
+        end
+
+        if pce.player != now_order
+          enemy << [x, y]
+        end
+      end
+    end
+
+    {ou: ou, friend: friend, enemy: enemy}
+  end
+
+  def get_oute_list ou_pos, enemy_list
+    oute_list = nil
+    enemy_list.each do |enemy|
+      if piece(enemy).move?(enemy, ou_pos)
+        oute_list << enemy
+      end
+    end
+    oute_list
   end
 end

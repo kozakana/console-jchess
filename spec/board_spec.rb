@@ -28,12 +28,6 @@ def init
 end
 
 describe Board do
-  #it "road_listの確認" do
-  #  pce = @board.piece [4,4]
-  #  #p @board.road_list pce, [4,7], [0,7]
-  #  p @board.move [4,7], [0,7], 1
-  #end
-
   describe "飛び駒の飛び越し判定" do
     describe "香車" do
       before do
@@ -160,12 +154,11 @@ describe Board do
       9.times do |x|
         9.times do |y|
           init
-          p "x:#{x} y:#{y}"
           if @nifu_result[x][y] == :success
-            @board.set [@nifu_pos[0], @nifu_pos[1]], :fu, ID
+            @board.set [x, y], :fu, ID
           else
             expect do
-              @board.set [@nifu_pos[0], @nifu_pos[1]], :fu, ID
+              @board.set [x, y], :fu, ID
             end.to raise_error( @nifu_result[x][y] )
           end
         end

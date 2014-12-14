@@ -1,7 +1,3 @@
-# TODO: 強制的駒を成る判定(行ける所がない判定)
-# TODO: 駒クラスに分けて行けるところ判定を駒クラスに入れる
-#       initialize / == / to_s
-
 class Piece
   attr_accessor :player, :grow
   
