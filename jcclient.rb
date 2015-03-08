@@ -121,7 +121,6 @@ class Client
   end
 
   def com_set com
-    com = str.split(" ")
     pos = []
     pos[0] = com[1][0].to_i - 1
     pos[1] = com[1][1].to_i - 1
