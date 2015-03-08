@@ -118,7 +118,7 @@ class Board
       else
         captured.player = :first
         captured.grow = false
-        to_stand :first, captured
+        @data.to_stand :first, captured
       end
     end
     @data[after[0],  after[1]]  = @data[before[0], before[1]]
