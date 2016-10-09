@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/kozakana/console-jchess.svg?style=svg)](https://circleci.com/gh/kozakana/console-jchess)
+
 # Remort Shogi board.
 
 ネットワーク経由で動作させられる将棋盤です
