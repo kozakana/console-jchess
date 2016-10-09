@@ -1,0 +1,13 @@
+machine:
+  timezone:
+    Asia/Tokyo
+  ruby:
+    version:
+      2.3.1
+
+database:
+  override:
+    - ./bin/rake db:create RAILS_ENV=test
+    - ./bin/rake db:migrate RAILS_ENV=test
+
+test:
